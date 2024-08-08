@@ -1,9 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateGenderDto } from './dto/create-gender.dto';
-// import { UpdateGenderDto } from './dto/update-gender.dto';
+import { UpdateGenderDto } from './dto/update-gender.dto';
 import { Repository } from 'typeorm';
 import { GenderEntity } from './gender.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { isUUID } from 'class-validator';
 
 @Injectable()
 export class GenderService {
@@ -18,19 +23,31 @@ export class GenderService {
     return this.genderRepository.save(gender);
   }
 
-  // findAll() {
-  //   return `This action returns all gender`;
-  // }
+  async findAll() {
+    const genders = await this.genderRepository.find();
+    return genders;
+  }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} gender`;
-  // }
+  async findOne(id: string) {
+    const gender = await this.genderRepository.findOne({ where: { id } });
+    return gender;
+  }
 
-  // update(id: number, updateGenderDto: UpdateGenderDto) {
-  //   return `This action updates a #${id} gender`;
-  // }
+  async update(id: string, updateGenderDto: UpdateGenderDto) {
+    if (!isUUID(id)) throw new BadRequestException('ID inválido');
+    const gender = await this.genderRepository.findOne({ where: { id } });
+    if (!gender) throw new NotFoundException('Gênero não encontrado');
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} gender`;
-  // }
+    Object.assign(gender, updateGenderDto);
+    await this.genderRepository.save(gender);
+    return gender;
+  }
+
+  async remove(id: string) {
+    if (!isUUID(id)) throw new BadRequestException('ID inválido');
+    const gender = await this.genderRepository.findOne({ where: { id } });
+    if (!gender) throw new NotFoundException('Gênero não encontrado');
+    const deletedGender = await this.genderRepository.remove(gender);
+    return { message: 'Gênero removido com sucesso', deletedGender };
+  }
 }

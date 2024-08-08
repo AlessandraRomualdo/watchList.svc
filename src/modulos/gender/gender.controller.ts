@@ -1,34 +1,49 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 import { GenderService } from './gender.service';
 import { CreateGenderDto } from './dto/create-gender.dto';
-// import { UpdateGenderDto } from './dto/update-gender.dto';
+import { UpdateGenderDto } from './dto/update-gender.dto';
 
 @Controller('gender')
 export class GenderController {
   constructor(private readonly genderService: GenderService) {}
 
   @Post()
-  create(@Body() createGenderDto: CreateGenderDto) {
-    return this.genderService.create(createGenderDto);
+  async create(@Body() createGenderDto: CreateGenderDto) {
+    return await this.genderService.create(createGenderDto);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.genderService.findAll();
-  // }
+  @Get()
+  async findAll() {
+    return await this.genderService.findAll();
+  }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.genderService.findOne(+id);
-  // }
+  @Get('/:id')
+  async findOne(@Param('id') id: string) {
+    return await this.genderService.findOne(id);
+  }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateGenderDto: UpdateGenderDto) {
-  //   return this.genderService.update(+id, updateGenderDto);
-  // }
+  @Patch('/:id')
+  async update(
+    @Param('id') id: string,
+    @Body() updateGenderDto: UpdateGenderDto,
+  ) {
+    const gender = await this.genderService.update(id, updateGenderDto);
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.genderService.remove(+id);
-  // }
+    return gender;
+  }
+
+  @Delete('/:id')
+  async remove(@Param('id') id: string) {
+    const gender = await this.genderService.findOne(id);
+    if (!gender) return;
+    return await this.genderService.remove(id);
+  }
 }

@@ -12,6 +12,7 @@ import { ListMovieModule } from './modulos/list-movie/list-movie.module';
 import { ListModule } from './modulos/list/list.module';
 import { UserModule } from './modulos/user/user.module';
 import { ListSerieModule } from './modulos/list-serie/list-serie.module';
+import { ClassSerializerInterceptor } from '@nestjs/common';
 
 @Module({
   imports: [
@@ -34,6 +35,12 @@ import { ListSerieModule } from './modulos/list-serie/list-serie.module';
     ListSerieModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: 'APP_INTERCEPTOR',
+      useClass: ClassSerializerInterceptor,
+    },
+  ],
 })
 export class AppModule {}

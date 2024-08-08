@@ -13,7 +13,15 @@ export class RoleService {
 
   async create(createRoleDto: CreateRoleDTO): Promise<RoleEntity> {
     const role = new RoleEntity();
-    role.role = createRoleDto.name;
+    role.role = createRoleDto.role;
     return this.roleRepository.save(role);
+  }
+
+  async findAll(): Promise<RoleEntity[]> {
+    return this.roleRepository.find();
+  }
+
+  async remove(id: string): Promise<void> {
+    await this.roleRepository.delete(id);
   }
 }

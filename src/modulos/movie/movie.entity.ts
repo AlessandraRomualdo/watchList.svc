@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { GenderEntity } from '../gender/gender.entity';
 import { ListMovieEntity } from '../list-movie/list-movie.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity({ name: 'movie' })
 export class MovieEntity {
@@ -29,12 +30,15 @@ export class MovieEntity {
   })
   description: string;
 
+  @Exclude()
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;
 
+  @Exclude()
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: string;
 
+  @Exclude()
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: string;
 
