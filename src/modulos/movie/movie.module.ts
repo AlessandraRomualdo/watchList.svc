@@ -9,6 +9,6 @@ import { GenderModule } from '../gender/gender.module';
   imports: [TypeOrmModule.forFeature([MovieEntity]), GenderModule],
   controllers: [MovieController],
   providers: [MovieService],
-  exports: [MovieService],
+  exports: [MovieService, TypeOrmModule],
 })
 export class MovieModule {}
