@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { ListEntity } from '../list/list.entity';
 import { RoleEntity } from '../role/role.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity({ name: 'user' })
 export class UserEntity {
@@ -22,18 +23,22 @@ export class UserEntity {
   @Column({ name: 'email', type: 'varchar', length: 150, nullable: false })
   email: string;
 
+  @Exclude()
   @Column({ name: 'password', type: 'varchar', length: 150, nullable: false })
   password: string;
 
   @Column({ name: 'birth_date', type: 'date', nullable: false })
   birthDate: string;
 
+  @Exclude()
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;
 
+  @Exclude()
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: string;
 
+  @Exclude()
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: string;
 
