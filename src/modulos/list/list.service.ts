@@ -39,8 +39,8 @@ export class ListService {
       where: { id },
       relations: ['user', 'listMovies'],
     });
-    const totalMovies = list.listMovies.length;
-    return { ...list, totalMovies };
+    const { listMovies, ...listWithoutMovies } = list;
+    return { ...listWithoutMovies, totalMovies: listMovies.length };
   }
 
   async findUserLists(userId: string) {
@@ -49,10 +49,14 @@ export class ListService {
     }
     const user = await this.userRepository.findOne({
       where: { id: userId },
-      relations: ['lists'],
+      relations: ['lists', 'lists.listMovies'],
     });
     if (!user) return { message: 'Usuário não encontrado' };
-    return user.lists;
+    const lists = user.lists.map((list) => {
+      const { listMovies, ...listWithoutMovies } = list;
+      return { ...listWithoutMovies, totalMovies: listMovies.length };
+    });
+    return lists;
   }
 
   async update(id: string, updateListDto: UpdateListDto) {
