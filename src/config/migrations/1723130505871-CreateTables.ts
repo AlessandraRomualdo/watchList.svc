@@ -37,15 +37,15 @@ export class CreateTables1723130505871 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "serie" ADD CONSTRAINT "FK_bc8ec299721c8ff23d333145ed9" FOREIGN KEY ("genderId") REFERENCES "gender"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
-    await queryRunner.query(
-      `ALTER TABLE "serie" ADD CONSTRAINT "FK_f2bedb0597d26501c3a80384594" FOREIGN KEY ("listSeriesId") REFERENCES "list_serie"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
+    // await queryRunner.query(
+    //   `ALTER TABLE "serie" ADD CONSTRAINT "FK_f2bedb0597d26501c3a80384594" FOREIGN KEY ("listSeriesId") REFERENCES "list_serie"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    // );
     await queryRunner.query(
       `ALTER TABLE "movie" ADD CONSTRAINT "FK_902bb01f6e71899b094c808efb4" FOREIGN KEY ("genderId") REFERENCES "gender"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
-    await queryRunner.query(
-      `ALTER TABLE "movie" ADD CONSTRAINT "FK_9486e35306c6472f80c4714c05f" FOREIGN KEY ("listMoviesId") REFERENCES "list_movie"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
+    // await queryRunner.query(
+    //   `ALTER TABLE "movie" ADD CONSTRAINT "FK_9486e35306c6472f80c4714c05f" FOREIGN KEY ("listMoviesId") REFERENCES "list_movie"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    // );
     await queryRunner.query(
       `ALTER TABLE "list_movie" ADD CONSTRAINT "FK_28c07fc26680987da9d4aff1f1b" FOREIGN KEY ("listId") REFERENCES "list"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
