@@ -7,6 +7,13 @@ import { Repository } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { isUUID } from 'class-validator';
 import { ListMovieEntity } from '../list-movie/list-movie.entity';
+import { ApiResponse } from '../../types/response.dto';
+
+export interface ListWithTotalMovies {
+  name: string;
+  user: UserEntity;
+  totalMovies: number;
+}
 
 @Injectable()
 export class ListService {
@@ -19,7 +26,8 @@ export class ListService {
     private readonly listMovieRepository: Repository<ListMovieEntity>,
   ) {}
 
-  async create(createListDto: CreateListDto) {
+  // metodo para criar uma lista de filmes para um usuário
+  async create(createListDto: CreateListDto): Promise<ApiResponse<ListEntity>> {
     const user = await this.userRepository.findOne({
       where: { id: createListDto.userId },
     });
@@ -27,23 +35,35 @@ export class ListService {
     const list = new ListEntity();
     list.name = createListDto.name;
     list.user = user.id as any;
-    return await this.listRepository.save(list);
+    await this.listRepository.save(list);
+    return { success: true, data: list };
   }
 
-  async findAll() {
-    return await this.listRepository.find();
+  // metodo para listar todas as listas de filmes cadastradas no sistema
+  async findAll(): Promise<ApiResponse<ListEntity[]>> {
+    const list = await this.listRepository.find();
+    if (!list) return { message: 'Nenhuma lista encontrada' };
+    return { success: true, data: list };
   }
 
-  async findOne(id: string) {
+  // metodo para listar todos os filmes de uma lista de filmes cadastrada no sistema
+  async findOne(id: string): Promise<ApiResponse<ListWithTotalMovies>> {
     const list = await this.listRepository.findOne({
       where: { id },
       relations: ['user', 'listMovies'],
     });
+    if (!list) return { message: 'List not found' };
     const { listMovies, ...listWithoutMovies } = list;
-    return { ...listWithoutMovies, totalMovies: listMovies.length };
+    return {
+      success: true,
+      data: { ...listWithoutMovies, totalMovies: listMovies.length },
+    };
   }
 
-  async findUserLists(userId: string) {
+  // metodo para listar todas as listas de filmes de um usuário cadastradas no sistema
+  async findUserLists(
+    userId: string,
+  ): Promise<ApiResponse<ListWithTotalMovies[]>> {
     if (!isUUID(userId)) {
       throw new BadRequestException('ID inválido');
     }
@@ -56,20 +76,26 @@ export class ListService {
       const { listMovies, ...listWithoutMovies } = list;
       return { ...listWithoutMovies, totalMovies: listMovies.length };
     });
-    return lists;
+    return { success: true, data: lists };
   }
 
-  async update(id: string, updateListDto: UpdateListDto) {
+  // metodo para atualizar uma lista de filmes cadastrada no sistema
+  async update(
+    id: string,
+    updateListDto: UpdateListDto,
+  ): Promise<ApiResponse<ListEntity>> {
     const list = await this.listRepository.findOne({ where: { id } });
-    if (!list) return;
+    if (!list) return { message: 'Lista não encontrada' };
     Object.assign(list, updateListDto);
-    return await this.listRepository.save(list);
+    const saveList = await this.listRepository.save(list);
+    return { success: true, data: saveList };
   }
 
-  async remove(id: string) {
+  // metodo para remover uma lista de filmes cadastrada no sistema
+  async remove(id: string): Promise<ApiResponse<ListEntity>> {
     const list = await this.listRepository.findOne({ where: { id } });
-    if (!list) return;
+    if (!list) return { message: 'Lista não encontrada' };
     await this.listRepository.remove(list);
-    return { message: 'Lista removida com sucesso', list };
+    return { success: true, data: list };
   }
 }

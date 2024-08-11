@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { GenderEntity } from '../gender/gender.entity';
 import { isUUID } from 'class-validator';
 import { UpdateMovieDto } from './dto/update-movie.dto';
+import { ApiResponse } from '../../types/response.dto';
 
 @Injectable()
 export class MovieService {
@@ -19,7 +20,11 @@ export class MovieService {
     @InjectRepository(GenderEntity)
     private readonly genderRepository: Repository<GenderEntity>,
   ) {}
-  async create(createMovieDto: CreateMovieDto) {
+
+  // metodo para criar um filme
+  async create(
+    createMovieDto: CreateMovieDto,
+  ): Promise<ApiResponse<CreateMovieDto>> {
     const gender = await this.genderRepository.findOne({
       where: { id: createMovieDto.genderId },
     });
@@ -29,28 +34,23 @@ export class MovieService {
     movie.description = createMovieDto.description;
     movie.poster = createMovieDto.poster;
     movie.gender = gender;
-    return this.movieRepository.save(movie);
+    await this.movieRepository.save(movie);
+    return { success: true, data: createMovieDto };
   }
 
-  async findAll() {
+  // metodo para listar todos os filmes cadastrados no sistema
+  async findAll(): Promise<ApiResponse<MovieEntity[]>> {
     const movies = await this.movieRepository.find({
       relations: {
         gender: true,
       },
     });
-    const formatedMovies = movies.map((movie) => {
-      return {
-        id: movie.id,
-        title: movie.title,
-        description: movie.description,
-        poster: movie.poster,
-        gender: movie.gender.gender,
-      };
-    });
-    return formatedMovies;
+    if (!movies) throw new NotFoundException('Nenhum filme encontrado');
+    return { success: true, data: movies };
   }
 
-  async findOne(id: string) {
+  // metodo para listar um filme cadastrado no sistema
+  async findOne(id: string): Promise<ApiResponse<MovieEntity>> {
     if (!isUUID(id)) {
       throw new BadRequestException('ID inválido');
     }
@@ -60,18 +60,15 @@ export class MovieService {
         gender: true,
       },
     });
-    console.log('Resultado da busca:', movie);
     if (!movie) throw new NotFoundException('Filme não encontrado');
-    return {
-      id: movie.id,
-      title: movie.title,
-      description: movie.description,
-      poster: movie.poster,
-      gender: movie.gender.gender,
-    };
+    return { success: true, data: movie };
   }
 
-  async update(id: string, updateMovieDto: UpdateMovieDto) {
+  // metodo para atualizar um filme cadastrado no sistema
+  async update(
+    id: string,
+    updateMovieDto: UpdateMovieDto,
+  ): Promise<ApiResponse<UpdateMovieDto>> {
     if (!isUUID(id)) throw new BadRequestException('ID inválido');
     const movie = await this.movieRepository.findOne({
       where: { id },
@@ -82,16 +79,11 @@ export class MovieService {
     Object.assign(movie, updateMovieDto);
 
     await this.movieRepository.save(movie);
-    return {
-      id: movie.id,
-      title: movie.title,
-      description: movie.description,
-      poster: movie.poster,
-      gender: movie.gender.gender,
-    };
+    return { success: true, data: updateMovieDto };
   }
 
-  async remove(id: string) {
+  // metodo para remover um filme cadastrado no sistema
+  async remove(id: string): Promise<ApiResponse<MovieEntity>> {
     if (!isUUID(id)) throw new BadRequestException('ID inválido');
     const movie = await this.movieRepository.findOne({
       where: { id },
@@ -99,6 +91,6 @@ export class MovieService {
     });
     if (!movie) throw new NotFoundException('Filme não encontrado');
     const removedMovie = await this.movieRepository.remove(movie);
-    return { message: 'Filme removido com sucesso', removedMovie };
+    return { success: true, data: removedMovie };
   }
 }
