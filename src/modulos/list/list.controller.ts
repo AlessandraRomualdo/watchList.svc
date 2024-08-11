@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ListService } from './list.service';
 import { CreateListDto } from './dto/create-list.dto';
 import { UpdateListDto } from './dto/update-list.dto';
@@ -8,27 +16,36 @@ export class ListController {
   constructor(private readonly listService: ListService) {}
 
   @Post()
-  create(@Body() createListDto: CreateListDto) {
-    return this.listService.create(createListDto);
+  async create(@Body() createListDto: CreateListDto) {
+    return await this.listService.create(createListDto);
   }
 
   @Get()
-  findAll() {
-    return this.listService.findAll();
+  async findAll() {
+    return await this.listService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.listService.findOne(+id);
+  @Get('/:id')
+  async findOne(@Param('id') id: string) {
+    return await this.listService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateListDto: UpdateListDto) {
-    return this.listService.update(+id, updateListDto);
+  @Get('/user/:userId')
+  async findUserLists(@Param('userId') userId: string) {
+    return await this.listService.findUserLists(userId);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.listService.remove(+id);
+  @Patch('/:id')
+  async update(@Param('id') id: string, @Body() updateListDto: UpdateListDto) {
+    const list = await this.listService.findOne(id);
+    if (!list) return;
+    return await this.listService.update(id, updateListDto);
+  }
+
+  @Delete('/:id')
+  async remove(@Param('id') id: string) {
+    const list = await this.listService.findOne(id);
+    if (!list) return;
+    return await this.listService.remove(id);
   }
 }

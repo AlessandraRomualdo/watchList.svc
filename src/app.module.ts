@@ -25,6 +25,7 @@ import { ClassSerializerInterceptor } from '@nestjs/common';
       useClass: DBConfigService,
       inject: [DBConfigService],
     }),
+    // importando os módulos da aplicação para serem carregados na aplicação principal do NestJS
     RoleModule,
     GenderModule,
     MovieModule,
@@ -34,7 +35,9 @@ import { ClassSerializerInterceptor } from '@nestjs/common';
     UserModule,
     ListSerieModule,
   ],
+  // importando o AppController e o AppService para serem carregados na aplicação principal do NestJS
   controllers: [AppController],
+  // importando o AppService para ser carregado na aplicação principal do NestJS e o ClassSerializerInterceptor para serializar as respostas da API e remover campos sensíveis
   providers: [
     AppService,
     {
