@@ -10,7 +10,7 @@ const dataSourceOptions: DataSourceOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
-  migrations: [__dirname + 'src/config/migrations/*.{js,ts}'],
+  migrations: [__dirname + '/../config/migrations/*.{js,ts}'],
   logging: true,
 };
 
