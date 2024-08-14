@@ -13,6 +13,7 @@ import { ListModule } from './modulos/list/list.module';
 import { UserModule } from './modulos/user/user.module';
 import { ListSerieModule } from './modulos/list-serie/list-serie.module';
 import { ClassSerializerInterceptor } from '@nestjs/common';
+import { AuthenticationModule } from './modulos/authentication/authentication.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { ClassSerializerInterceptor } from '@nestjs/common';
     ListModule,
     UserModule,
     ListSerieModule,
+    AuthenticationModule,
   ],
   // importando o AppController e o AppService para serem carregados na aplicação principal do NestJS
   controllers: [AppController],

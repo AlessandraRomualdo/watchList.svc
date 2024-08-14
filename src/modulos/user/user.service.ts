@@ -6,12 +6,15 @@ import { Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { isUUID } from 'class-validator';
 import { ApiResponse } from '../../types/response.dto';
+import { RoleEntity } from '../role/role.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(RoleEntity)
+    private readonly roleRepository: Repository<RoleEntity>,
   ) {}
 
   // metodo para criar um usuário
@@ -21,7 +24,8 @@ export class UserService {
     user.email = createUserDto.email;
     user.password = createUserDto.password;
     user.birthDate = createUserDto.birthDate;
-    user.role = '801cb2cf-9d3b-4d74-8bab-016205bc9fbd' as any;
+    const role = await this.roleRepository.findOne({ where: { role: 'user' } });
+    user.role = role;
     if (!user) throw new Error('Usuário não informado');
     await this.userRepository.save(user);
     return { success: true, data: user };
@@ -37,6 +41,13 @@ export class UserService {
   // metodo para listar um usuário cadastrado no sistema
   async findOne(id: string): Promise<ApiResponse<UserEntity>> {
     const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) throw new Error('Usuário não encontrado');
+    return { success: true, data: user };
+  }
+
+  // metodo para listar um usuário cadastrado no sistema pelo email
+  async findByEmail(email: string) {
+    const user = await this.userRepository.findOne({ where: { email } });
     if (!user) throw new Error('Usuário não encontrado');
     return { success: true, data: user };
   }

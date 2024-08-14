@@ -10,14 +10,23 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { HasherPasswordPipe } from 'src/pipes/hasher-password';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
-    return await this.userService.create(createUserDto);
+  async create(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    @Body() { password, ...createUserDto }: CreateUserDto,
+    // usando o pipe para encriptar a senha do usuário antes de salvar no banco
+    @Body('password', HasherPasswordPipe) hashedPassord: string,
+  ) {
+    return await this.userService.create({
+      ...createUserDto,
+      password: hashedPassord,
+    });
   }
 
   @Get()
