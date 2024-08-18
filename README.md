@@ -15,7 +15,7 @@ O repositório WhatchList é uma API em Nest.js e typeOrm, para gerenciar uma ap
 
 ## Estrutura do banco de dados
 
-![DB]()
+![DB](https://github.com/AlessandraRomualdo/watchList.svc/blob/main/5b32089e-9b59-4706-a65c-5a62c17486c5.png)
 
 ## Variáveis de Ambiente
 
