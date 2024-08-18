@@ -1,10 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UseGuards } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { RoleEntity } from './role.entity';
 import { CreateRoleDTO } from './dto/CreateRole';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApiResponse } from '../../types/response.dto';
+import {
+  AdminGuard,
+  AuthenticationGuard,
+} from '../authentication/authentication.guard';
 
+@UseGuards(AuthenticationGuard, AdminGuard)
 @Injectable()
 export class RoleService {
   constructor(

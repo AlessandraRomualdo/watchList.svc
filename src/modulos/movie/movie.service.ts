@@ -49,7 +49,17 @@ export class MovieService {
     return { success: true, data: movies };
   }
 
-  // metodo para listar um filme cadastrado no sistema
+  // metodo para listar todos os filmes cadastrados no sistema por gênero
+  async findAllByGender(gender: string): Promise<ApiResponse<MovieEntity[]>> {
+    const movies = await this.movieRepository.find({
+      relations: { gender: true },
+      where: { gender: { gender } },
+    });
+    if (!movies) throw new NotFoundException('Nenhum filme encontrado');
+    return { success: true, data: movies };
+  }
+
+  // metodo para listar um filme cadastrado no sistema pelo id
   async findOne(id: string): Promise<ApiResponse<MovieEntity>> {
     if (!isUUID(id)) {
       throw new BadRequestException('ID inválido');

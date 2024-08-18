@@ -14,6 +14,7 @@ import { ListService } from './list.service';
 import { CreateListDto } from './dto/create-list.dto';
 import { UpdateListDto } from './dto/update-list.dto';
 import {
+  AdminGuard,
   AuthenticationGuard,
   RequestWithUser,
 } from '../authentication/authentication.guard';
@@ -23,6 +24,7 @@ import {
 export class ListController {
   constructor(private readonly listService: ListService) {}
 
+  // rota para criar uma lista filmes ou series de um usuário
   @Post()
   async create(
     @Req() req: RequestWithUser,
@@ -31,11 +33,6 @@ export class ListController {
     const userId = req.user.sub;
     console.log(userId);
     return await this.listService.create({ ...createListDto, userId });
-  }
-
-  @Get()
-  async findAll() {
-    return await this.listService.findAll();
   }
 
   // rota para buscar uma lista pelo id
@@ -70,5 +67,12 @@ export class ListController {
     const list = await this.listService.findOne(id);
     if (!list) return;
     return await this.listService.remove(id);
+  }
+
+  // rota para buscar todas as listas de filmes ou series da aplicação
+  @UseGuards(AuthenticationGuard, AdminGuard)
+  @Get()
+  async findAll() {
+    return await this.listService.findAll();
   }
 }
