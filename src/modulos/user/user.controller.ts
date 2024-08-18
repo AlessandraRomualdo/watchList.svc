@@ -29,6 +29,19 @@ export class UserController {
     });
   }
 
+  @Post('/admin')
+  async createAdmin(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    @Body() { password, ...createUserDto }: CreateUserDto,
+    // usando o pipe para encriptar a senha do usuário antes de salvar no banco
+    @Body('password', HasherPasswordPipe) hashedPassord: string,
+  ) {
+    return await this.userService.createAdmin({
+      ...createUserDto,
+      password: hashedPassord,
+    });
+  }
+
   @Get()
   async findAll() {
     return await this.userService.findAll();
