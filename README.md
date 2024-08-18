@@ -1,7 +1,7 @@
 
 # WatchList
 
-O repositório WhatchList é uma API em Nest.js e typeOrm, para gerenciar uma aplicação de listas de filmes e séries utilizando o  banco de dados postgress.
+O repositório WatchList é uma API em Nest.js e typeOrm, para gerenciar uma aplicação de listas de filmes e séries utilizando o  banco de dados postgress.
 
 
 
@@ -82,3 +82,9 @@ Inicie o servidor
 
 Você pode acompalhar a documentação com o swagger, quando a aplicação estiver executando em:
 http://localhost:3000/api#/
+
+## Usuário de Administrador
+
+`email:`  admin@email.com
+
+`senha:`  Abc123*

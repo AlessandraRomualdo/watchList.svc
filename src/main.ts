@@ -19,7 +19,7 @@ async function bootstrap() {
       'Uma documentação simples para o projeto WatchList, que é um projeto de estudo de NestJS e TypeORM',
     )
     .setVersion('1.0')
-    .addTag('users')
+    // .addTag('users')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

@@ -4,6 +4,9 @@ export class CreateTables1723130505871 implements MigrationInterface {
   name = 'CreateTables1723130505871';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`CREATE DATABASE IF NOT EXISTS "db_watchList"`);
+    await queryRunner.query(`USE "db_watchList"`);
+
     await queryRunner.query(
       `CREATE TABLE IF NOT EXISTS "list_serie" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "listId" uuid, "serieId" uuid, CONSTRAINT "PK_7e8d0d120d62fecb4cc2a89c3b3" PRIMARY KEY ("id"))`,
     );
@@ -93,5 +96,7 @@ export class CreateTables1723130505871 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "gender"`);
     await queryRunner.query(`DROP TABLE "serie"`);
     await queryRunner.query(`DROP TABLE "list_serie"`);
+    await queryRunner.query(`DROP TABLE IF EXISTS "list_serie"`);
+    await queryRunner.query(`DROP DATABASE IF EXISTS "db_watchList"`);
   }
 }
