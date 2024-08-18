@@ -78,3 +78,7 @@ Inicie o servidor
   npm run start:dev
 ```
 
+## Documentação da API
+
+Você pode acompalhar a documentação com o swagger, quando a aplicação estiver executando em:
+http://localhost:3000/api#/
