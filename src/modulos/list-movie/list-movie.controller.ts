@@ -10,19 +10,21 @@ import {
 import { ListMovieService } from './list-movie.service';
 import { CreateListMovieDto } from './dto/create-list-movie.dto';
 import { AuthenticationGuard } from '../authentication/authentication.guard';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('list-movie')
 @Controller('list-movie')
 export class ListMovieController {
   constructor(private readonly listMovieService: ListMovieService) {}
 
-  // rota para adicionar um filme a uma lista de filmes
+  @ApiOperation({ summary: 'Adiciona um filme a uma lista' })
   @UseGuards(AuthenticationGuard)
   @Post()
   addMivieAtList(@Body() createListMovieDto: CreateListMovieDto) {
     return this.listMovieService.addMovieAtList(createListMovieDto);
   }
 
-  // rota para buscar todos os filmes de uma lista de filmes
+  @ApiOperation({ summary: 'Busca todos os fimes de uma lista de filmes' })
   @UseGuards(AuthenticationGuard)
   @Get('/:id')
   async findOne(@Param('id') id: string) {
@@ -30,7 +32,7 @@ export class ListMovieController {
     return moviesAtList;
   }
 
-  // rota para remover um filme de uma lista de filmes
+  @ApiOperation({ summary: 'Remove um filme de uma lista de filmes' })
   @UseGuards(AuthenticationGuard)
   @Delete('/:id')
   async remove(@Param('id') id: string, @Body() body: { movieId: string }) {

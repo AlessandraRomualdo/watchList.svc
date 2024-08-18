@@ -18,13 +18,15 @@ import {
   AuthenticationGuard,
   RequestWithUser,
 } from '../authentication/authentication.guard';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('list')
 @UseGuards(AuthenticationGuard)
 @Controller('list')
 export class ListController {
   constructor(private readonly listService: ListService) {}
 
-  // rota para criar uma lista filmes ou series de um usuário
+  @ApiOperation({ summary: 'Cria uma lista de filmes ou séries de um usuário' })
   @Post()
   async create(
     @Req() req: RequestWithUser,
@@ -35,20 +37,20 @@ export class ListController {
     return await this.listService.create({ ...createListDto, userId });
   }
 
-  // rota para buscar uma lista pelo id
+  @ApiOperation({ summary: 'Busca uma lista pelo id' })
   @Get('/:id')
   async findOne(@Param('id') id: string) {
     return await this.listService.findOne(id);
   }
 
-  // rota para buscar todas as listas de um usuário
+  @ApiOperation({ summary: 'Busca todas as listas de um usuário' })
   @Get('/user/:userId')
   async findUserLists(@Req() req: RequestWithUser) {
     const userId = req.user.sub;
     return await this.listService.findUserLists(userId);
   }
 
-  // rota para atualizar uma lista pelo id
+  @ApiOperation({ summary: 'Atualiza uma lista pelo id' })
   @Patch()
   async update(
     @Query('id') id: string,
@@ -61,7 +63,7 @@ export class ListController {
     return await this.listService.update(id, { name, userId: user });
   }
 
-  // rota para deletar uma lista pelo id
+  @ApiOperation({ summary: 'Remove uma lista pelo id' })
   @Delete()
   async remove(@Query('id') id: string) {
     const list = await this.listService.findOne(id);
@@ -69,7 +71,9 @@ export class ListController {
     return await this.listService.remove(id);
   }
 
-  // rota para buscar todas as listas de filmes ou series da aplicação
+  @ApiOperation({
+    summary: 'Busca todas as listas de filmes ou séries da aplicação',
+  })
   @UseGuards(AuthenticationGuard, AdminGuard)
   @Get()
   async findAll() {

@@ -15,26 +15,28 @@ import {
   AdminGuard,
   AuthenticationGuard,
 } from '../authentication/authentication.guard';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('movie')
 @Controller('movie')
 export class MovieController {
   constructor(private readonly movieService: MovieService) {}
 
-  // rota para buscar todos os filmes
+  @ApiOperation({ summary: 'Busca todos os filmes' })
   @Get()
   async findAll() {
     const movies = await this.movieService.findAll();
     return movies;
   }
 
-  // rota para buscar todos os filmes de um gênero
+  @ApiOperation({ summary: 'Busca todos os filmes de um gênero' })
   @Get('/gender/:gender')
   async findAllByGender(@Param('gender') gender: string) {
     const movies = await this.movieService.findAllByGender(gender);
     return movies;
   }
 
-  // rota para buscar um filme pelo id
+  @ApiOperation({ summary: 'Busca um filme pelo id' })
   @Get('/:id')
   async findOne(@Param('id') id: string) {
     const movie = await this.movieService.findOne(id);
@@ -42,14 +44,15 @@ export class MovieController {
   }
 
   // rotas abaixo são protegidas por autenticação e autorização de administrador
-  // rota para criar um filme
+
+  @ApiOperation({ summary: 'Cria um filme' })
   @UseGuards(AuthenticationGuard, AdminGuard)
   @Post()
   async create(@Body() createMovieDto: CreateMovieDto) {
     return this.movieService.create(createMovieDto);
   }
 
-  // rota para atualizar um filme pelo id
+  @ApiOperation({ summary: 'Atualiza um filme pelo id' })
   @UseGuards(AuthenticationGuard, AdminGuard)
   @Patch('/:id')
   async update(
@@ -60,7 +63,7 @@ export class MovieController {
     return movie;
   }
 
-  // rota para deletar um filme pelo id
+  @ApiOperation({ summary: 'Deleta um filme pelo id' })
   @UseGuards(AuthenticationGuard, AdminGuard)
   @Delete('/:id')
   async remove(@Param('id') id: string) {

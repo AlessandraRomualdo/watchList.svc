@@ -15,31 +15,33 @@ import {
   AdminGuard,
   AuthenticationGuard,
 } from '../authentication/authentication.guard';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('gender')
 @Controller('gender')
 export class GenderController {
   constructor(private readonly genderService: GenderService) {}
 
-  // rota para criar um gênero
+  @ApiOperation({ summary: 'Cria um genero de filme ou série' })
   @UseGuards(AuthenticationGuard, AdminGuard)
   @Post()
   async create(@Body() createGenderDto: CreateGenderDto) {
     return await this.genderService.create(createGenderDto);
   }
 
-  // rota para buscar todos os gêneros
+  @ApiOperation({ summary: 'Busca todos os generos de filme ou série' })
   @Get()
   async findAll() {
     return await this.genderService.findAll();
   }
 
-  // rota para buscar um gênero pelo id
+  @ApiOperation({ summary: 'Busca um genero pelo id' })
   @Get('/:id')
   async findOne(@Param('id') id: string) {
     return await this.genderService.findOne(id);
   }
 
-  // rota para atualizar um gênero pelo id
+  @ApiOperation({ summary: 'Atualiza um genero pelo id' })
   @UseGuards(AuthenticationGuard, AdminGuard)
   @Patch('/:id')
   async update(
@@ -51,7 +53,7 @@ export class GenderController {
     return gender;
   }
 
-  // rota para remover um gênero pelo id
+  @ApiOperation({ summary: 'Remove um genero pelo id' })
   @UseGuards(AuthenticationGuard, AdminGuard)
   @Delete('/:id')
   async remove(@Param('id') id: string) {
