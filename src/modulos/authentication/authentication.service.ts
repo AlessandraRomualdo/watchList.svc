@@ -6,7 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 export interface UserPayload {
   sub: string;
   email: string;
-  role?: string;
+  role: string;
 }
 
 @Injectable()
@@ -30,7 +30,7 @@ export class AuthenticationService {
     const payload: UserPayload = {
       sub: user.data.id,
       email: user.data.email,
-      // role: user.data.role.role,
+      role: user.data.role.role,
     };
     return {
       token_aceess: await this.jwtService.signAsync(payload),
