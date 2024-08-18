@@ -37,3 +37,18 @@ export class AuthenticationGuard implements CanActivate {
     return type === 'Bearer' ? token : undefined;
   }
 }
+
+@Injectable()
+export class AdminGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const request = context.switchToHttp().getRequest<RequestWithUser>();
+    const user = request.user;
+
+    // Verifica se o usuário está autenticado e se possui a role de admin
+    if (user && user.role === 'admin') {
+      return true; // Permite o acesso às rotas protegidas para admin
+    }
+
+    throw new UnauthorizedException('Usuário não tem permissão de admin');
+  }
+}
