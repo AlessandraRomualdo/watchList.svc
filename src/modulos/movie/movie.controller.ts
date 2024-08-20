@@ -43,6 +43,13 @@ export class MovieController {
     return movie;
   }
 
+  @ApiOperation({ summary: 'Busca um filme pelo nome' })
+  @Get('/title/:title')
+  async findByTitle(@Param('title') title: string) {
+    const movie = await this.movieService.findByTitle(title);
+    return movie;
+  }
+
   // rotas abaixo são protegidas por autenticação e autorização de administrador
 
   @ApiOperation({ summary: 'Cria um filme' })

@@ -59,6 +59,16 @@ export class MovieService {
     return { success: true, data: movies };
   }
 
+  // metodo para pesquisar um filme pelo nome
+  async findByTitle(title: string): Promise<ApiResponse<MovieEntity[]>> {
+    const movies = await this.movieRepository
+      .createQueryBuilder('movie')
+      .where('LOWER(movie.title) LIKE LOWER(:title)', { title: `%${title}%` })
+      .getMany();
+    if (!movies) throw new NotFoundException('Nenhum filme encontrado');
+    return { success: true, data: movies };
+  }
+
   // metodo para listar um filme cadastrado no sistema pelo id
   async findOne(id: string): Promise<ApiResponse<MovieEntity>> {
     if (!isUUID(id)) {
