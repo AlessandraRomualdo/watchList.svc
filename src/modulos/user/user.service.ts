@@ -1,4 +1,4 @@
-import { Injectable, UseGuards } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,10 +7,6 @@ import { UserEntity } from './user.entity';
 import { isUUID } from 'class-validator';
 import { ApiResponse } from '../../types/response.dto';
 import { RoleEntity } from '../role/role.entity';
-import {
-  AdminGuard,
-  AuthenticationGuard,
-} from '../authentication/authentication.guard';
 
 @Injectable()
 export class UserService {
@@ -36,7 +32,6 @@ export class UserService {
   }
 
   // medoto para criar um usuário administrador
-  @UseGuards(AuthenticationGuard, AdminGuard)
   async createAdmin(
     createUserDto: CreateUserDto,
   ): Promise<ApiResponse<UserEntity>> {
@@ -55,7 +50,6 @@ export class UserService {
   }
 
   // metodo para listar todos os usuários cadastrados no sistema
-  @UseGuards(AuthenticationGuard, AdminGuard)
   async findAll(): Promise<ApiResponse<UserEntity[]>> {
     const users = await this.userRepository.find();
     if (!users) throw new Error('Nenhum usuário encontrado');
@@ -63,7 +57,6 @@ export class UserService {
   }
 
   // metodo para listar um usuário cadastrado no sistema
-  @UseGuards(AuthenticationGuard)
   async findOne(id: string): Promise<ApiResponse<UserEntity>> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) throw new Error('Usuário não encontrado');
@@ -71,7 +64,6 @@ export class UserService {
   }
 
   // metodo para listar um usuário cadastrado no sistema pelo email
-  @UseGuards(AuthenticationGuard)
   async findByEmail(email: string) {
     const user = await this.userRepository.findOne({
       where: { email },
@@ -82,7 +74,6 @@ export class UserService {
   }
 
   // metodo para atualizar um usuário cadastrado no sistema
-  @UseGuards(AuthenticationGuard)
   async update(
     id: string,
     updateUserDto: UpdateUserDto,
@@ -95,7 +86,6 @@ export class UserService {
     return { success: true, data: user };
   }
 
-  @UseGuards(AuthenticationGuard, AdminGuard)
   // metodo para remover um usuário cadastrado no sistema
   async remove(id: string): Promise<ApiResponse<UserEntity>> {
     if (!isUUID(id)) throw new Error('ID inválido');

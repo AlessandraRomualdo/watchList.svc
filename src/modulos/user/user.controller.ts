@@ -53,12 +53,14 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Lista todos os usuários' })
+  @UseGuards(AuthenticationGuard, AdminGuard)
   @Get()
   async findAll() {
     return await this.userService.findAll();
   }
 
   @ApiOperation({ summary: 'Busca um usuário pelo id' })
+  @UseGuards(AuthenticationGuard)
   @Get('/:id')
   async findOne(@Param('id') id: string) {
     return await this.userService.findOne(id);
