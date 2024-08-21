@@ -7,7 +7,7 @@ export class CreateSeederUserAdmin1724005789307 implements MigrationInterface {
       VALUES (
         'Admin', 
         'admin@email.com', 
-        'Abc123*', 
+        '$2b$10$pRHpayh70V4beOnhVqtWQ.H0FDF4cIk9AF5Wc1NDYmshbZsui5Vgy', 
         (SELECT "id" FROM "role" WHERE "role" = 'admin' LIMIT 1),
         '2000-01-01' -- Adicione um valor para birth_date
       )
