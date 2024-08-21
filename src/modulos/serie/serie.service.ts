@@ -1,26 +1,113 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSerieDto } from './dto/create-serie.dto';
 import { UpdateSerieDto } from './dto/update-serie.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { SerieEntity } from './serie.entity';
+import { Repository } from 'typeorm';
+import { GenderEntity } from '../gender/gender.entity';
+import { ApiResponse } from 'src/types/response.dto';
+import { isUUID } from 'class-validator';
 
 @Injectable()
 export class SerieService {
-  create(createSerieDto: CreateSerieDto) {
-    return 'This action adds a new serie';
+  constructor(
+    @InjectRepository(SerieEntity)
+    private readonly serieRepository: Repository<SerieEntity>,
+    @InjectRepository(GenderEntity)
+    private readonly genderRepository: Repository<GenderEntity>,
+  ) {}
+
+  // metodo para criar uma serie
+  async create(
+    createSerieDto: CreateSerieDto,
+  ): Promise<ApiResponse<CreateSerieDto>> {
+    const gender = await this.genderRepository.findOne({
+      where: { id: createSerieDto.genderId },
+    });
+    if (!gender) throw new Error('Gênero não encontrado');
+    const serie = new SerieEntity();
+    serie.title = createSerieDto.title;
+    serie.description = createSerieDto.description;
+    serie.poster = createSerieDto.poster;
+    serie.seasons = createSerieDto.seasons;
+    serie.gender = gender;
+    await this.serieRepository.save(serie);
+    return { success: true, data: createSerieDto };
   }
 
-  findAll() {
-    return `This action returns all serie`;
+  // metodo para listar todas as series cadastradas no sistema
+  async findAll(): Promise<ApiResponse<SerieEntity[]>> {
+    const series = await this.serieRepository.find({
+      relations: {
+        gender: true,
+      },
+    });
+    if (!series) throw new Error('Nenhuma serie encontrada');
+    return { success: true, data: series };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} serie`;
+  // metodo para listar todas as series cadastradas no sistema por gênero
+  async findAllByGender(gender: string): Promise<ApiResponse<SerieEntity[]>> {
+    const series = await this.serieRepository.find({
+      relations: { gender: true },
+      where: { gender: { gender } },
+    });
+    if (!series) throw new Error('Nenhuma serie encontrada');
+    return { success: true, data: series };
   }
 
-  update(id: number, updateSerieDto: UpdateSerieDto) {
-    return `This action updates a #${id} serie`;
+  // metodo para pesquisar uma serie pelo nome
+  async findByTitle(title: string): Promise<ApiResponse<SerieEntity[]>> {
+    const serie = await this.serieRepository
+      .createQueryBuilder('serie')
+      .where('LOWER(serie.title) LIKE LOWER(:title)', { title: `%${title}%` })
+      .getMany();
+    if (!serie) throw new Error('Nenhuma serie encontrada');
+    return { success: true, data: serie };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} serie`;
+  // metodo para listar uma serie cadastrada no sistema pelo id
+  async findOne(id: string): Promise<ApiResponse<SerieEntity>> {
+    if (!isUUID(id)) {
+      throw new Error('Id inválido');
+    }
+    const serie = await this.serieRepository.findOne({
+      where: { id },
+      relations: { gender: true },
+    });
+    if (!serie) throw new Error('Nenhuma serie encontrada');
+    return { success: true, data: serie };
+  }
+
+  // metodo para atualizar uma serie cadastrada no sistema pelo id
+  async update(
+    id: string,
+    updateSerieDto: UpdateSerieDto,
+  ): Promise<ApiResponse<SerieEntity>> {
+    if (!isUUID(id)) {
+      throw new Error('Id inválido');
+    }
+    const serie = await this.serieRepository.findOne({
+      where: { id },
+      relations: { gender: true },
+    });
+    if (!serie) throw new Error('Nenhuma serie encontrada');
+    Object.assign(serie, updateSerieDto);
+    await this.serieRepository.save(serie);
+    return { success: true, data: serie };
+  }
+
+  // metodo para remover uma serie cadastrada no sistema pelo id
+  async remove(id: string): Promise<ApiResponse<SerieEntity>> {
+    if (!isUUID(id)) {
+      throw new Error('Id inválido');
+    }
+    const serie = await this.serieRepository.findOne({
+      where: { id },
+      relations: { gender: true },
+    });
+    if (!serie) throw new Error('Nenhuma serie encontrada');
+    const removedSerie = await this.serieRepository.remove(serie);
+    return { success: true, data: removedSerie };
   }
 }
