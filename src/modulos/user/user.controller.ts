@@ -52,6 +52,21 @@ export class UserController {
     });
   }
 
+  @ApiOperation({ summary: 'Cria um usuário editor' })
+  @UseGuards(AuthenticationGuard, AdminGuard)
+  @Post('/editor')
+  async createEditor(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    @Body() { password, ...createUserDto }: CreateUserDto,
+    // usando o pipe para encriptar a senha do usuário antes de salvar no banco
+    @Body('password', HasherPasswordPipe) hashedPassord: string,
+  ) {
+    return await this.userService.createEditor({
+      ...createUserDto,
+      password: hashedPassord,
+    });
+  }
+
   @ApiOperation({ summary: 'Lista todos os usuários' })
   @UseGuards(AuthenticationGuard, AdminGuard)
   @Get()

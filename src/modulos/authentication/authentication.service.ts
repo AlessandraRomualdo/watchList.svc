@@ -33,6 +33,8 @@ export class AuthenticationService {
       role: user.data.role.role,
     };
     return {
+      id: user.data.id,
+      role: user.data.role.role,
       token_aceess: await this.jwtService.signAsync(payload),
     };
   }

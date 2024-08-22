@@ -49,6 +49,24 @@ export class UserService {
     return { success: true, data: user };
   }
 
+  // metodo para criar um usuário editor
+  async createEditor(
+    createUserDto: CreateUserDto,
+  ): Promise<ApiResponse<UserEntity>> {
+    const user = new UserEntity();
+    user.name = createUserDto.name;
+    user.email = createUserDto.email;
+    user.password = createUserDto.password;
+    user.birthDate = createUserDto.birthDate;
+    const role = await this.roleRepository.findOne({
+      where: { role: 'editor' },
+    });
+    user.role = role;
+    if (!user) throw new Error('Usuário não informado');
+    await this.userRepository.save(user);
+    return { success: true, data: user };
+  }
+
   // metodo para listar todos os usuários cadastrados no sistema
   async findAll(): Promise<ApiResponse<UserEntity[]>> {
     const users = await this.userRepository.find();
