@@ -7,7 +7,7 @@ O repositório WatchList é uma API em Nest.js e typeOrm, para gerenciar uma apl
 
 ## Funcionalidades
 
-- Adicioner e remover filmes e series
+- Adicionar e remover filmes e series
 - Criar listas e remover
 - Criar cadastro
 - Gerenciamento de usuarios e rotas
@@ -40,7 +40,7 @@ Para rodar esse projeto, você vai precisar adicionar as seguintes variáveis de
 `JWT_SECRET`=2158346296
 ## Rodando localmente
 
-| Para rodar o projeto você precisa ter o Dock instalado na sua máquina
+| Para rodar o projeto você precisa ter o Docker instalado na sua máquina
 
 Clone o projeto SSH
 
@@ -80,7 +80,7 @@ Inicie o servidor
 
 ## Documentação da API
 
-Você pode acompalhar a documentação com o swagger, quando a aplicação estiver executando em:
+Você pode acompanhar a documentação com o swagger, quando a aplicação estiver executando em:
 http://localhost:3000/api#/
 
 ## Usuário de Administrador
