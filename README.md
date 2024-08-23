@@ -2,6 +2,7 @@
 # WatchList
 
 O repositório WatchList é uma API em Nest.js e typeOrm, para gerenciar uma aplicação de listas de filmes e séries utilizando o  banco de dados postgress.
+O repositório tem muitos comentarios sobre metodos e uso de métodos e classes em geral, pois é um repositório para estudo.
 
 
 
@@ -21,7 +22,7 @@ O repositório WatchList é uma API em Nest.js e typeOrm, para gerenciar uma apl
 
 ## Variáveis de Ambiente
 
-Para rodar esse projeto, você vai precisar adicionar as seguintes variáveis de ambiente no seu .env
+| Para rodar esse projeto, você vai precisar adicionar as seguintes variáveis de ambiente no seu arquivo .env
 
 `DB_HOST`=127.0.0.1
 
@@ -38,6 +39,7 @@ Para rodar esse projeto, você vai precisar adicionar as seguintes variáveis de
 `SALT`=$2b$10$pRHpayh70V4beOnhVqtWQ.
 
 `JWT_SECRET`=2158346296
+
 ## Rodando localmente
 
 | Para rodar o projeto você precisa ter o Docker instalado na sua máquina
@@ -78,10 +80,16 @@ Inicie o servidor
   npm run start:dev
 ```
 
+## Logar no pgadmin
+
+Voce pode usar os dados do arquivo .env
+
+![DB](https://github.com/AlessandraRomualdo/watchList.svc/blob/main/logar-pgadmin.gif?raw=true)
+
 ## Documentação da API
 
 Você pode acompanhar a documentação com o swagger, quando a aplicação estiver executando em:
-http://localhost:3000/api#/
+http://localhost:3001/api#/
 
 ## Usuário de Administrador
 
