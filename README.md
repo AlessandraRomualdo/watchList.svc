@@ -83,6 +83,7 @@ Inicie o servidor
 ## Logar no pgadmin
 
 Voce pode usar os dados do arquivo .env
+Acesse http://localhost:8081/ para logar no pgadmin ou se prevefir use outro cliente de banco de dados 
 
 ![DB](https://github.com/AlessandraRomualdo/watchList.svc/blob/main/logar-pgadmin.gif?raw=true)
 
