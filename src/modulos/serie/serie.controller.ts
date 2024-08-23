@@ -15,6 +15,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
   AdminGuard,
   AuthenticationGuard,
+  EditorGuard,
 } from '../authentication/authentication.guard';
 
 @ApiTags('serie')
@@ -52,13 +53,14 @@ export class SerieController {
   // rotas abaixo são protegidas por autenticação e autorização de administrador
 
   @ApiOperation({ summary: 'Cria uma serie' })
-  @UseGuards(AuthenticationGuard, AdminGuard)
+  @UseGuards(AuthenticationGuard, AdminGuard, EditorGuard)
   @Post()
   async create(@Body() createSerieDto: CreateSerieDto) {
     return this.serieService.create(createSerieDto);
   }
 
   @ApiOperation({ summary: 'Atualiza uma serie pelo id' })
+  @UseGuards(AuthenticationGuard, AdminGuard, EditorGuard)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -69,6 +71,7 @@ export class SerieController {
   }
 
   @ApiOperation({ summary: 'Deleta uma serie pelo id' })
+  @UseGuards(AuthenticationGuard, AdminGuard, EditorGuard)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     const serie = await this.serieService.findOne(id);

@@ -14,6 +14,7 @@ import { UpdateMovieDto } from './dto/update-movie.dto';
 import {
   AdminGuard,
   AuthenticationGuard,
+  EditorGuard,
 } from '../authentication/authentication.guard';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -53,14 +54,14 @@ export class MovieController {
   // rotas abaixo são protegidas por autenticação e autorização de administrador
 
   @ApiOperation({ summary: 'Cria um filme' })
-  @UseGuards(AuthenticationGuard, AdminGuard)
+  @UseGuards(AuthenticationGuard, AdminGuard, EditorGuard)
   @Post()
   async create(@Body() createMovieDto: CreateMovieDto) {
     return this.movieService.create(createMovieDto);
   }
 
   @ApiOperation({ summary: 'Atualiza um filme pelo id' })
-  @UseGuards(AuthenticationGuard, AdminGuard)
+  @UseGuards(AuthenticationGuard, AdminGuard, EditorGuard)
   @Patch('/:id')
   async update(
     @Param('id') id: string,
@@ -71,7 +72,7 @@ export class MovieController {
   }
 
   @ApiOperation({ summary: 'Deleta um filme pelo id' })
-  @UseGuards(AuthenticationGuard, AdminGuard)
+  @UseGuards(AuthenticationGuard, AdminGuard, EditorGuard)
   @Delete('/:id')
   async remove(@Param('id') id: string) {
     const movie = await this.movieService.findOne(id);
