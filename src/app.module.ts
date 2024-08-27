@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { ConsoleLogger, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -14,6 +14,7 @@ import { UserModule } from './modulos/user/user.module';
 import { ListSerieModule } from './modulos/list-serie/list-serie.module';
 import { ClassSerializerInterceptor } from '@nestjs/common';
 import { AuthenticationModule } from './modulos/authentication/authentication.module';
+import { LoggerGlobalInterceptor } from './recursos/interceptors/logger-global.interceptor';
 
 @Module({
   imports: [
@@ -42,10 +43,18 @@ import { AuthenticationModule } from './modulos/authentication/authentication.mo
   // importando o AppService para ser carregado na aplicação principal do NestJS e o ClassSerializerInterceptor para serializar as respostas da API e remover campos sensíveis
   providers: [
     AppService,
+    // importando o ClassSerializerInterceptor para ser carregado na aplicação principal do NestJS e serializar as respostas da API para remover campos sensíveis
     {
       provide: 'APP_INTERCEPTOR',
       useClass: ClassSerializerInterceptor,
     },
+    // importando o LoggerGlobalInterceptor para ser carregado na aplicação principal do NestJS e exibir logs no console para todas as requisições HTTP da API
+    {
+      provide: 'APP_INTERCEPTOR',
+      useClass: LoggerGlobalInterceptor,
+    },
+    // importando o ConsoleLogger para ser carregado na aplicação principal do NestJS e exibir logs no console
+    ConsoleLogger,
   ],
 })
 export class AppModule {}
