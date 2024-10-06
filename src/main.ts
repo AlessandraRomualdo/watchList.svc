@@ -13,6 +13,11 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Habilitando CORS para permitir requisições de outras origens, como o frontend Angular
+  app.enableCors({
+    origin: 'http://localhost:4200', // URL do frontend Angular
+  });
+
   const config = new DocumentBuilder()
     .setTitle('Documentação com Swagger - WatchList')
     .setDescription(
