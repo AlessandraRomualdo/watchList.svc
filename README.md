@@ -65,7 +65,7 @@ Instale as dependências
 Suba o container
 
 ```
-    docker-componse up -d
+    docker-compose up -d
 ```
 
 Rode as migrations
