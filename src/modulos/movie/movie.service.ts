@@ -39,13 +39,33 @@ export class MovieService {
   }
 
   // metodo para listar todos os filmes cadastrados no sistema
-  async findAll(): Promise<ApiResponse<MovieEntity[]>> {
-    const movies = await this.movieRepository.find({
-      relations: {
-        gender: true,
-      },
-    });
-    if (!movies) throw new NotFoundException('Nenhum filme encontrado');
+  async findAll(
+    title?: string, // filtro opcional por título
+    gender?: string, // filtro opcional por gênero
+  ): Promise<ApiResponse<MovieEntity[]>> {
+    const queryBuilder = this.movieRepository.createQueryBuilder('movie');
+
+    // Adiciona relação com o gênero
+    queryBuilder.leftJoinAndSelect('movie.gender', 'gender');
+
+    // Filtro por título, se fornecido
+    if (title) {
+      queryBuilder.andWhere('LOWER(movie.title) LIKE LOWER(:title)', {
+        title: `%${title}%`,
+      });
+    }
+
+    // Filtro por gênero, se fornecido
+    if (gender) {
+      queryBuilder.andWhere('gender.gender = :gender', { gender });
+    }
+
+    const movies = await queryBuilder.getMany();
+
+    if (!movies || movies.length === 0) {
+      throw new NotFoundException('Nenhum filme encontrado');
+    }
+
     return { success: true, data: movies };
   }
 

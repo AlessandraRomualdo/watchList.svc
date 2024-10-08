@@ -7,6 +7,7 @@ import {
   Patch,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
@@ -25,8 +26,11 @@ export class MovieController {
 
   @ApiOperation({ summary: 'Busca todos os filmes' })
   @Get()
-  async findAll() {
-    const movies = await this.movieService.findAll();
+  async findAll(
+    @Query('title') title?: string,
+    @Query('gender') gender?: string,
+  ) {
+    const movies = await this.movieService.findAll(title, gender);
     return movies;
   }
 
