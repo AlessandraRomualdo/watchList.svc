@@ -42,6 +42,7 @@ export class MovieService {
   async findAll(
     title?: string, // filtro opcional por título
     gender?: string, // filtro opcional por gênero
+    orderBy: 'asc' | 'desc' = 'asc', // ordenação opcional
   ): Promise<ApiResponse<MovieEntity[]>> {
     const queryBuilder = this.movieRepository.createQueryBuilder('movie');
 
@@ -58,6 +59,11 @@ export class MovieService {
     // Filtro por gênero, se fornecido
     if (gender) {
       queryBuilder.andWhere('gender.gender = :gender', { gender });
+    }
+
+    if (orderBy) {
+      const sortOrder = orderBy === 'desc' ? 'DESC' : 'ASC';
+      queryBuilder.orderBy('movie.title', sortOrder);
     }
 
     const movies = await queryBuilder.getMany();
