@@ -29,7 +29,7 @@ export class MovieController {
   async findAll(
     @Query('title') title?: string,
     @Query('gender') gender?: string,
-    @Query('orderBy') orderBy?: 'asc' | 'desc',
+    @Query('orderBy') orderBy: 'asc' | 'desc' = 'asc',
   ) {
     const movies = await this.movieService.findAll(title, gender, orderBy);
     return movies;
