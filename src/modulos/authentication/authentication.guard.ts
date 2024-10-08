@@ -21,6 +21,8 @@ export class AuthenticationGuard implements CanActivate {
     // pega a requisição do contexto e extrai o token do header de autorização da requisição HTTP
     const request = context.switchToHttp().getRequest<RequestWithUser>();
     const token = this.extractToken(request);
+    const user = request.user;
+    console.log(user);
     // se não tiver token, lança uma exceção de não autorizado
     if (!token) throw new UnauthorizedException('Usuário não autorizado');
     try {
@@ -52,7 +54,7 @@ export class AdminGuard implements CanActivate {
     const user = request.user;
 
     // Verifica se o usuário está autenticado e se possui a role de admin
-    if (user && user.role === 'admin') {
+    if (user.role === 'admin') {
       return true; // Permite o acesso às rotas protegidas para admin
     }
 
@@ -68,7 +70,7 @@ export class EditorGuard implements CanActivate {
     const user = request.user;
 
     // Verifica se o usuário está autenticado e se possui a role de editor
-    if (user && user.role === 'editor') {
+    if (user.role === 'editor' || user.role === 'admin') {
       return true; // Permite o acesso às rotas protegidas para editor
     }
 
