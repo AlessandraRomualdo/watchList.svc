@@ -36,14 +36,39 @@ export class SerieService {
   }
 
   // metodo para listar todas as series cadastradas no sistema
-  async findAll(): Promise<ApiResponse<SerieEntity[]>> {
-    const series = await this.serieRepository.find({
-      relations: {
-        gender: true,
-      },
-    });
+  async findAll(
+    title?: string, // filtro opcional
+    gender?: string, // filtro opcional
+    orderBy: 'asc' | 'desc' = 'asc', // ordenação opcional
+  ): Promise<ApiResponse<SerieEntity[]>> {
+    const queryBuilder = this.serieRepository.createQueryBuilder('serie');
+    // Adiciona relação com o gênero
+    queryBuilder.leftJoinAndSelect('serie.gender', 'gender');
+    // Filtro por título, se fornecido
+    if (title) {
+      queryBuilder.andWhere('LOWER(serie.title) LIKE LOWER(:title)', {
+        title: `%${title}%`,
+      });
+    }
+    // Filtro por gênero, se fornecido
+    if (gender) {
+      queryBuilder.andWhere('gender.gender = :gender', { gender });
+    }
+    // Ordenação
+    if (orderBy) {
+      const sortOrder = orderBy === 'desc' ? 'DESC' : 'ASC';
+      queryBuilder.orderBy('serie.title', sortOrder);
+    }
+    const series = await queryBuilder.getMany();
     if (!series) throw new Error('Nenhuma serie encontrada');
     return { success: true, data: series };
+    // const series = await this.serieRepository.find({
+    //   relations: {
+    //     gender: true,
+    //   },
+    // });
+    // if (!series) throw new Error('Nenhuma serie encontrada');
+    // return { success: true, data: series };
   }
 
   // metodo para listar todas as series cadastradas no sistema por gênero

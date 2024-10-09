@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { SerieService } from './serie.service';
 import { CreateSerieDto } from './dto/create-serie.dto';
@@ -25,8 +26,12 @@ export class SerieController {
 
   @ApiOperation({ summary: 'Busca todos as series' })
   @Get()
-  async findAll() {
-    const series = await this.serieService.findAll();
+  async findAll(
+    @Query('title') title?: string,
+    @Query('gender') gender?: string,
+    @Query('orderBy') orderBy: 'asc' | 'desc' = 'asc',
+  ) {
+    const series = await this.serieService.findAll(title, gender, orderBy);
     return series;
   }
 
